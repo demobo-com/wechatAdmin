@@ -42,6 +42,7 @@ export function* submitForm() {
         call(auth.setToken, response.jwt, body.rememberMe),
         call(auth.setUserInfo, response.user, body.rememberMe),
       ]);
+      // TODO: 如果用户处于非登陆表单提交时，是否也进入首页
       yield call(forwardTo, '/');
       const submitWatcher = yield fork(takeLatest, SUBMIT, submitForm);
       yield cancel(submitWatcher);

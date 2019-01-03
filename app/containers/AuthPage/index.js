@@ -8,11 +8,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import { get, map, replace } from 'lodash';
+import { replace } from 'lodash';
 import { Link } from 'react-router-dom';
+import {
+  Checkbox,
+  // Icon,
+  Button,
+  Form,
+  Input,
+} from 'antd';
 
-import Button from 'components/Button';
-import Input from 'components/Input';
+// import Button from 'components/Button';
+// import Input from 'components/Input';
 import Logo from 'images/logo_strapi.png';
 
 // Utils
@@ -20,14 +27,14 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 
 import { onChange, setForm, submit } from './actions';
-
-import form from './form.json';
-
+// import form from './form.json';
 import makeSelectAuthPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-
+import { FORM_ITEMS } from './constants';
 import './styles.scss';
+
+const FormItem = Form.Item;
 
 export class AuthPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   componentDidMount() {
@@ -50,98 +57,147 @@ export class AuthPage extends React.Component { // eslint-disable-line react/pre
     this.props.setForm(props.match.params.authType, params);
   }
 
-  /**
-   * Check the URL's params to render the appropriate links
-   * @return {Element} Returns navigation links
-   */
-  renderLink = () => {
-    if (this.props.match.params.authType === 'login') {
-      return (
-        <div>
-          <Link to="/auth/forgot-password">
-            Forgot Password
-          </Link>
-          &nbsp;or&nbsp;
-          <Link to="/auth/register">
-            register
-          </Link>
-        </div>
-      );
-    }
+  renderFormItem = (name) => ( // eslint-disable-line
+    <FormItem
+      {...FORM_ITEMS[name].rules}
+    >
+      <Input
+        size="large"
+        name={name}
+        onChange={this.props.onChange}
+        {...FORM_ITEMS[name].props}
+      />
+    </FormItem>
+    )
+  renderUserHelper = () => ( // eslint-disable-line
+    <div>
+      {/* // TODO: 对于存储在后台存在疑问 */}
+      <Checkbox checked={false} onChange={() => console.log('自动登录')}>
+        Automatic Login
+      </Checkbox>
+      <Link style={{ float: 'right' }} to="/auth/forgot-password">
+          Forgot Password
+      </Link>
+    </div>
+  )
+  renderOtherLoginMethod = () => ( // eslint-disable-line
+    <div className="other">
+      {/* // TODO: 不确认第三方登录情况 */}
+      {/* 其他登录方式
+      <Icon className="icon" type="alipay-circle" onClick={() => this.renderModalPrompt('第三方登录')} />
+      <Icon className="icon" type="taobao-circle" onClick={() => this.renderModalPrompt('第三方登录')} />
+      <Icon className="icon" type="weibo-circle" onClick={() => this.renderModalPrompt('第三方登录')} /> */}
+      <Link className="register" to="/auth/register">
+          Register
+      </Link>
+    </div>
+  )
+  renderLoginForm = () => ( // eslint-disable-line
+    <Form
+      className="login_form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        this.props.submit();
+      }}
+    >
+      { this.renderFormItem('identifier') }
+      { this.renderFormItem('password') }
+      { this.renderUserHelper() }
+      <FormItem>
+        <Button
+          size="large"
+          type="primary"
+          htmlType="submit"
+          className="submit"
+        >Login</Button>
+      </FormItem>
 
-    return (
-      <div>
-        <Link to="/auth/login">
-          Ready to signin
+      { this.renderOtherLoginMethod() }
+    </Form>
+  )
+  renderForgotPasswordForm = () => ( // eslint-disable-line
+    <Form
+      className="login_form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        this.props.submit();
+      }}
+    >
+      { this.renderFormItem('email') }
+      <FormItem>
+        <Button
+          size="large"
+          type="primary"
+          htmlType="submit"
+          className="submit"
+        >Submit</Button>
+      </FormItem>
+    </Form>
+    )
+  renderRegisterForm = () => ( // eslint-disable-line
+    <Form
+      className="login_form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        this.props.submit();
+      }}
+    >
+      { this.renderFormItem('userName') }
+      { this.renderFormItem('password') }
+      { this.renderFormItem('confirmPassword') }
+      { this.renderFormItem('email') }
+      <FormItem>
+        <Button
+          size="large"
+          type="primary"
+          htmlType="submit"
+          className="register_submit"
+        >Submit</Button>
+        <Link className="login" to="/auth/login">
+              使用已有账户登录
         </Link>
-      </div>
-    );
+      </FormItem>
+    </Form>
+    )
+  renderLoginContent = (formType) => { // eslint-disable-line
+    switch (formType) {
+      case 'login':
+        return this.renderLoginForm();
+      case 'forgot-password':
+        return this.renderForgotPasswordForm();
+      case 'register':
+        return this.renderRegisterForm();
+      default:
+        return this.renderLoginForm();
+    }
   }
 
   render() {
-    const divStyle = this.props.match.params.authType === 'register' ? { marginTop: '3.2rem' } : { marginTop: '.9rem' };
-    const inputs = get(form, this.props.match.params.authType) || [];
-    const providers = ['discord', 'facebook', 'github', 'google', 'microsoft', 'twitch', 'twitter']; // To remove a provider from the list just delete it from this array...
-
+    // const divStyle = this.props.match.params.authType === 'register' ? { marginTop: '3.2rem' } : { marginTop: '.9rem' };
+    // const providers = ['discord', 'facebook', 'github', 'google', 'microsoft', 'twitch', 'twitter']; // To remove a provider from the list just delete it from this array...
+    const { formType } = this.props;
+    // const login = {};
     return (
-      <div className="authPage">
-        <div className="wrapper">
-          <div className="headerContainer">
-            {this.props.match.params.authType === 'register' ? (
-              <span>Welcome !</span>
+      <div className="auth_page">
+        <div className="header_container">
+          {formType === 'register' ? (
+            <h1>Welcome !</h1>
             ) : (
-              <img src={Logo} alt="logo" />
+              <div className="header_image_content">
+                <img src={Logo} alt="logo" className="header_image" />
+              </div>
             )}
-          </div>
-          <div className="headerDescription">
-            {this.props.match.params.authType === 'register' ? (
-              <span>
-                Please register to access the app.
-              </span>
+          {formType === 'register' ? (
+            <p>Please register to access the app.</p>
             ) : ''}
-          </div>
-          <div className="formContainer" style={divStyle}>
-            <div className="container-fluid">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  this.props.submit();
-                }}
-              >
-                <div className="row" style={{ textAlign: 'start' }}>
-                  {map(inputs, (input, key) => (
-                    <Input
-                      autoFocus={key === 0}
-                      customBootstrapClass={get(input, 'customBootstrapClass')}
-                      didCheckErrors={false}
-                      errors={[]}
-                      key={get(input, 'name')}
-                      label={get(input, 'label')}
-                      name={get(input, 'name')}
-                      onChange={this.props.onChange}
-                      placeholder={get(input, 'placeholder')}
-                      type={get(input, 'type')}
-                      validations={{ required: true }}
-                      value={get(this.props.modifiedData, get(input, 'name'))}
-                    />
-                  ))}
-                  <div className="col-md-12 buttonContainer">
-                    <Button
-                      label="Submit"
-                      style={{ width: '100%' }}
-                      primary
-                      type="submit"
-                    />
-                  </div>
-                </div>
-
-              </form>
-            </div>
-          </div>
-          <div className="linkContainer">
-            {this.renderLink()}
-          </div>
         </div>
+        {/* {
+              (login.status === 'error' &&
+              login.type === 'account' &&
+              !login.submitting) &&
+                  this.renderMessage('账户或密码错误')
+            } */}
+        { this.renderLoginContent(formType) }
       </div>
     );
   }
@@ -149,8 +205,8 @@ export class AuthPage extends React.Component { // eslint-disable-line react/pre
 
 AuthPage.propTypes = {
   formType: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  // history: PropTypes.object.isRequired,
+  // location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   setForm: PropTypes.func.isRequired,
