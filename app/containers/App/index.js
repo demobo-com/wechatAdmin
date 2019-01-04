@@ -29,6 +29,8 @@ export default class App extends React.Component {
     const token = auth.getToken();
     if (!token) {
       history.push('/auth/login');
+    } else {
+      history.push('/user/home');
     }
   }
 

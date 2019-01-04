@@ -37,6 +37,13 @@ import './styles.scss';
 const FormItem = Form.Item;
 
 export class AuthPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentChecked: false,
+    };
+  }
+
   componentDidMount() {
     this.setForm(this.props);
   }
@@ -69,17 +76,26 @@ export class AuthPage extends React.Component { // eslint-disable-line react/pre
       />
     </FormItem>
     )
-  renderUserHelper = () => ( // eslint-disable-line
-    <div>
-      {/* // TODO: 对于存储在后台存在疑问 */}
-      <Checkbox checked={false} onChange={() => console.log('自动登录')}>
+  renderUserHelper = () => { // eslint-disable-line
+    const { currentChecked } = this.state;
+    return (
+      <div>
+        <Checkbox
+          checked={currentChecked}
+          onChange={({ target }) => {
+            const rememberMe = target.checked;
+            this.setState({ currentChecked: rememberMe });
+            this.props.onChange({ target: { name: 'rememberMe', value: rememberMe } });
+          }}
+        >
         Automatic Login
       </Checkbox>
-      <Link style={{ float: 'right' }} to="/auth/forgot-password">
+        <Link style={{ float: 'right' }} to="/auth/forgot-password">
           Forgot Password
       </Link>
-    </div>
-  )
+      </div>
+    );
+  }
   renderOtherLoginMethod = () => ( // eslint-disable-line
     <div className="other">
       {/* // TODO: 不确认第三方登录情况 */}
