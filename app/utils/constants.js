@@ -23,6 +23,10 @@ export const USER_MENU_DATA = [
         name: 'administrator',
         path: 'administrator',
       },
+      {
+        name: 'notFound',
+        path: 'notFound',
+      },
     ],
   },
   {

@@ -23,6 +23,7 @@ import makeSelectLandingPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 // import messages from './messages';
+import './styles.scss';
 
 export class LandingPage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -55,7 +56,7 @@ export class LandingPage extends React.Component { // eslint-disable-line react/
     const qrcodeImageSrc = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrcode)}`;
 
     return (
-      <div>
+      <div className="landing_page">
         <div>
           <p>{username}</p>
           <p>{id}</p>

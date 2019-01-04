@@ -11,11 +11,12 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 // import messages from './messages';
+import './styles.scss';
 
 export class DetailPage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
-      <div>
+      <div className="detail_page">
         Detail Page
       </div>
     );
