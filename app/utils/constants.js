@@ -6,7 +6,7 @@ export const STRAPI_BASE = 'http://54.193.111.245:1337';
 
 export const USER_MENU_DATA = [
   {
-    name: '账户',
+    name: 'Profile',
     icon: 'admin',
     path: 'user',
     authority: 'Administrator',
@@ -30,7 +30,7 @@ export const USER_MENU_DATA = [
     ],
   },
   {
-    name: '账户',
+    name: 'Profile',
     icon: 'authenticated',
     path: 'user',
     authority: 'Authenticated',

@@ -39,6 +39,7 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import LandingPage from 'containers/LandingPage/Loadable';
 import DetailPage from 'containers/DetailPage/Loadable';
 import AdminPage from 'containers/AdminPage/Loadable';
+import avatarImage from 'assets/avatar.png';
 
 import './styles.scss';
 
@@ -156,8 +157,8 @@ export default class HomePage extends React.Component {
         className="sider"
       >
         <div className="logo" key="logo">
-          <Link to="/user/home">
-            {/* <img src={logo} alt="logo" /> */}
+          <Link to="/user/home" className="logo_line">
+            <img src={avatarImage} alt="logo" className="logo_image" />
             <h1>新项目</h1>
           </Link>
         </div>
@@ -186,7 +187,7 @@ export default class HomePage extends React.Component {
               key={menuDataItem.path}
               title={
                 <span>
-                  <Icon type="setting" />
+                  <Icon type="home" />
                   <span>{menuDataItem.name}</span>
                 </span>
               }
@@ -229,7 +230,7 @@ export default class HomePage extends React.Component {
           {user ? (
             <Dropdown overlay={menu}>
               <span className="avatar_line">
-                <Avatar size="small" className="avatar" src={user.qrcode} />
+                <Avatar size="small" className="avatar" src={avatarImage} />
                 <span className="name">{user.weChatName}</span>
               </span>
             </Dropdown>
