@@ -1,10 +1,10 @@
 import {
   all,
   call,
-  cancel,
-  fork,
+  // cancel,
+  // fork,
   take,
-  takeLatest,
+  // takeLatest,
 } from 'redux-saga/effects';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import { history } from 'app';
@@ -14,7 +14,7 @@ import auth from 'utils/auth';
 import request from 'utils/request';
 
 // Constants
-import { LOG_USER } from './constants';
+// import { LOG_USER } from './constants';
 
 export function* login(action) {
   try {
@@ -27,7 +27,7 @@ export function* login(action) {
         call(auth.setToken, response.jwt, true),
         call(auth.setUserInfo, response.user, true),
       ]);
-      yield call(forwardTo, '/');
+      yield call(forwardTo, '/user/home');
     }
   } catch (error) {
     yield call(forwardTo, '/auth/login');
@@ -36,7 +36,7 @@ export function* login(action) {
 
 // Individual exports for testing
 export default function* defaultSaga() {
-  const loginWatcher = yield fork(takeLatest, LOG_USER, login);
+  // const loginWatcher = yield fork(takeLatest, LOG_USER, login);
   yield take(LOCATION_CHANGE);
   // yield cancel(loginWatcher);
 }

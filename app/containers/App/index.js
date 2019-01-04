@@ -35,7 +35,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route strict path="/user" component={HomePage} />
         <Route exact path="/connect/:provider" component={ConnectPage} />
         <Route exact path="/auth/:authType/:id?" component={AuthPage} />
         <ProtectedRoute exact path="/:foo" component={SecurePage} />
