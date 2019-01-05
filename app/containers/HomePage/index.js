@@ -257,8 +257,8 @@ export default class HomePage extends React.Component {
           <Content className="basic_content">
             <Switch>
               <Route exact path="/user/home" component={LandingPage} />
-              <Route path="/user/detail" component={DetailPage} />
-              <Route path="/user/administrator" component={AdminPage} />
+              <Route path="/user/activities" component={DetailPage} />
+              <Route path="/user/balances" component={AdminPage} />
               <Route component={NotFoundPage} />
             </Switch>
           </Content>

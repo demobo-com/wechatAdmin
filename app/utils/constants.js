@@ -16,16 +16,12 @@ export const USER_MENU_DATA = [
         path: 'home',
       },
       {
-        name: 'detail',
-        path: 'detail',
+        name: 'Activities',
+        path: 'activities',
       },
       {
-        name: 'administrator',
-        path: 'administrator',
-      },
-      {
-        name: 'notFound',
-        path: 'notFound',
+        name: 'Balances',
+        path: 'balances',
       },
     ],
   },
@@ -40,8 +36,12 @@ export const USER_MENU_DATA = [
         path: 'home',
       },
       {
-        name: 'detail',
-        path: 'detail',
+        name: 'activities',
+        path: 'activities',
+      },
+      {
+        name: 'balances',
+        path: 'balances',
       },
     ],
   },
