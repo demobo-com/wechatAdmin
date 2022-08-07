@@ -25,6 +25,7 @@ import {
   Avatar,
   // Divider,
 } from 'antd';
+import _ from 'lodash';
 
 // import 'rc-drawer-menu/assets/index.css';
 // Utils
@@ -33,18 +34,19 @@ import {
   STRAPI_BASE,
   USER_MENU_DATA,
 } from 'utils/constants';
-import openSocket from 'socket.io-client';
+// import openSocket from 'socket.io-client';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import LandingPage from 'containers/LandingPage/Loadable';
 import DetailPage from 'containers/DetailPage/Loadable';
+import BlackjackPage from 'containers/BlackjackPage/Loadable';
 import AdminPage from 'containers/AdminPage/Loadable';
 import avatarImage from 'assets/avatar.png';
 
 import './styles.scss';
 
 const { Content, Header, Sider } = Layout;
-const { SubMenu } = Menu;
+const { SubMenu, Item, Divider } = Menu;
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -55,24 +57,25 @@ export default class HomePage extends React.Component {
       nextPath: '',
       openKeys: ['user'],
       selectedKeys: ['home'],
-      collapsed: false,
+      collapsed: true,
     };
   }
 
   componentWillMount() {
     const token = auth.getToken();
     if (token) {
-      let user = auth.getUserInfo();
+      const user = auth.getUserInfo();
       this.setState({ loggedIn: true, user });
-      this.socket = openSocket(STRAPI_BASE, {
-        query: { token },
-      });
-      this.socket.on('connect', (d) => console.log('socket connected', d));
-      this.socket.on(`users/${user.id}`, (newUser) => {
-        user = { ...user, ...newUser };
-        auth.setUserInfo(user);
-        this.setState({ user });
-      });
+
+      // this.socket = openSocket(STRAPI_BASE, {
+      //   query: { token },
+      // });
+      // this.socket.on('connect', (d) => console.log('socket connected', d));
+      // this.socket.on(`users/${user.id}`, (newUser) => {
+      //   user = { ...user, ...newUser };
+      //   auth.setUserInfo(user);
+      //   this.setState({ user });
+      // });
     }
   }
 
@@ -193,7 +196,7 @@ export default class HomePage extends React.Component {
               }
             >
               {menuDataItem.children.map((menuItem) =>
-                <Menu.Item key={menuItem.path}>{menuItem.name}</Menu.Item>
+                <Item key={menuItem.path}>{menuItem.name}</Item>
               )}
             </SubMenu>
           ))
@@ -207,16 +210,16 @@ export default class HomePage extends React.Component {
 
     const menu = (
       <Menu className="menu" selectedKeys={[]} onClick={this.onMenuClick}>
-        <Menu.Item disabled>
+        <Item disabled>
           <Icon type="user" />个人中心
-        </Menu.Item>
-        <Menu.Item disabled>
+        </Item>
+        <Item disabled>
           <Icon type="setting" />设置
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="logout">
+        </Item>
+        <Divider />
+        <Item key="logout">
           <Icon type="logout" />退出登录
-        </Menu.Item>
+        </Item>
       </Menu>
     );
     return (
@@ -257,6 +260,7 @@ export default class HomePage extends React.Component {
           <Content className="basic_content">
             <Switch>
               <Route exact path="/user/home" component={LandingPage} />
+              <Route exact path="/user/blackjack" component={BlackjackPage} />
               <Route path="/user/activities" component={DetailPage} />
               <Route path="/user/balances" component={AdminPage} />
               <Route component={NotFoundPage} />

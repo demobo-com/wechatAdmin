@@ -30,7 +30,7 @@ export function* login(action) {
       yield call(forwardTo, '/user/home');
     }
   } catch (error) {
-    yield call(forwardTo, '/auth/login');
+    // yield call(forwardTo, '/auth/login');
   }
 }
 

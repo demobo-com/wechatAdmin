@@ -44,3 +44,8 @@ app.listen(port, host, (err) => {
     logger.appStarted(port, prettyHost);
   }
 });
+
+app.get('/hello', (req, res) => {
+  console.log('hello');
+  res.send('Hello World');
+});
