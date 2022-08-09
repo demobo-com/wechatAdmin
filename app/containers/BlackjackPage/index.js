@@ -138,7 +138,7 @@ export class BlackjackPage extends React.Component { // eslint-disable-line reac
   }
 
   onTrainExpensive = () => {
-    this.specialStrategy = this.allStrategy.filter((s) => s.didWrong && s.leak > 2);
+    this.specialStrategy = this.allStrategy.filter((s) => s.leak > 2);
     if (this.state.removalTotal) { this.specialStrategy = this.specialStrategy.filter((s) => s.removals.length === 3 || s.removals.length === this.state.removalTotal + 3); }
     if (this.state.playerTotal) {
       this.specialStrategy = this.specialStrategy.filter((s) => s.p1 + s.p2 === this.state.playerTotal);

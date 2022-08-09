@@ -93,7 +93,7 @@ export default class HomePage extends React.Component {
 
   isMainMenu = (key) => { // eslint-disable-line
     const { user } = this.state;
-    const menuData = USER_MENU_DATA.filter((item) => item.authority === user.role.name);
+    const menuData = USER_MENU_DATA;
     return menuData.some((item) => key && (item.key === key || item.path === key));
   }
   handleOpenChange = (openKeys) => { // eslint-disable-line
@@ -137,7 +137,8 @@ export default class HomePage extends React.Component {
     const { history } = this.props;
     const { user, collapsed, openKeys } = this.state;
     if (!user) return null;
-    const menuData = USER_MENU_DATA.filter((item) => item.authority === user.role.name);
+    const menuData = [USER_MENU_DATA];
+    console.log(user, menuData);
     this.flatMenuKeys = this.getFlatMenuKeys(menuData);
     let selectedKeys = this.getSelectedMenuKeys();
     selectedKeys = selectedKeys[selectedKeys.length - 1].split('/').slice(1);

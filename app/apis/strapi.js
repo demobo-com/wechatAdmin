@@ -7,6 +7,7 @@ import {
 } from 'utils/helpers';
 // import moment from 'moment';
 import _ from 'lodash';
+const qs = require('qs');
 
 const STRAPI_BASE = '';
 
@@ -126,96 +127,29 @@ export function signOut() {
   return Promise.resolve();
 }
 
-export function forgetUserPassword(email) {
-  const url = `${STRAPI_BASE}/auth/forgot-password`;
-  return requestWithAlert(url, {
-    method: 'POST',
-    body: {
-      email,
-      url: `${window.location.origin}/forgetPassword/step3`, // TODO link
-    },
-  });
-}
-// TODO: strapi does not have changeUserPassword, use resetUserPassword for now
-export function changeUserPassword(
-  oldPassword,
-  password,
-  passwordConfirmation,
-) {
-  console.log(passwordConfirmation);
-  // const url = `${STRAPI_BASE}/auth/change-password`;
-  // return request(url, {
-  //   method: 'POST',
-  //   body: {
-  //     oldPassword,
-  //     password: newPassword,
-  //     passwordConfirmation: newPassword,
-  //   },
-  // });
-  return Promise.resolve();
-}
-export function resetUserPassword(code, password, passwordConfirmation) {
-  const url = `${STRAPI_BASE}/auth/reset-password`;
-  return requestWithAlert(url, {
-    method: 'POST',
-    body: {
-      code,
-      password,
-      passwordConfirmation,
-    },
-  });
-}
-
-export function uploadProfileFile(authUserId, field, fileBuffer) {
-  const body = new FormData();
-  body.append('ref', 'Profile');
-  body.append('refId', authUserId);
-  body.append('field', field);
-  body.append('files', fileBuffer);
-
-  const url = `${STRAPI_BASE}/upload`;
-  return requestWithAlert(url, {
-    method: 'POST',
-    body,
-    isFormData: true,
-  });
-}
-export function deleteProfileFile(fileId) {
-  const url = `${STRAPI_BASE}/files/${fileId}`;
-  return requestWithAlert(url, {
-    method: 'DELETE',
-  });
-}
-
-const delay = (resolve, result, time = 1000) =>
-  setTimeout(() => resolve(result), time);
-
-export function loadOrderByID(id) {
-  return updateStrapi(`orders/${id}`);
-}
-
-export function getHandStrategy({ p1, p2, d1, removals }) {
-  const removalsString = JSON.stringify(removals);
-  const url = `blackjacks/getHandStrategy?p1=${p1}&p2=${p2}&d1=${d1}&removals=${removalsString}&sampleSize=30000`;
-  return getStrapi(url);
-}
-
-export function getDidWrongStrategy() {
-  const url = 'blackjacks?_limit=1000&didWrong=true';
-  return getStrapi(url);
-}
-
-export function getSpecialStrategy() {
-  const url = 'blackjacks?_limit=1000&isSpecial=true';
-  return getStrapi(url);
-}
-
 export function getAllStrategy() {
-  const url = 'blackjacks?_limit=50000&isSpecial=true';
-  return getStrapi(url);
+  const query = qs.stringify({
+    filters: {
+      // isSpecial: {
+      //   $eq: true,
+      // },
+    },
+    populate: '*',
+    pagination: {
+      pageSize: 50000,
+      page: 1,
+    },
+  }, {
+    encodeValuesOnly: true,
+  });
+  const url = `blackjacks?${query}`;
+  return getStrapi(url).then((res) => res.data.map((item) => {
+    item.attributes.id = item.id;
+    return item.attributes;
+  }));
 }
 
 export function setDidWrong(id) {
   const url = `blackjacks/${id}`;
-  return updateStrapi(url, { didWrong: true });
+  return updateStrapi(url, { data: { didWrong: true } });
 }
